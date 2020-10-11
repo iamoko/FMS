@@ -1,0 +1,117 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+    <ui:define name="title">Withdraws</ui:define>
+    <ui:define name="viewname">Withdraws</ui:define>
+    <ui:define name="content">
+        <h:form id="usersView" rendered="#{pgwRenderer.viewWithdraws}">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <div class="">
+                        <div class="card">
+                            <div class="shadow-box ui-shadow-1">
+                                <p:breadCrumb homeDisplay="text" styleClass="breadcrumb">
+                                    <p:menuitem value=""/>
+                                    <p:menuitem value="Home" url="#{request.contextPath}/Dashboard"
+                                                style="font-size: 13px; margin-left: 5px !important; font-weight: bold !important;"/>
+                                    <p:menuitem value="Withdraws"
+                                                url="#{request.contextPath}#{emailTemplateView.viewPath}"/>
+
+                                </p:breadCrumb>
+                            </div>
+                            <p:separator/>
+
+                            <div class="shadow-box ui-shadow-1">
+
+                                <p:spacer width="5"/>
+                                <h:panelGroup styleClass="ui-panelgrid-blank form-group">
+                                    <h:commandLink>
+                                        <p:graphicImage name="logo/PDF_file_icon.svg"
+                                                        library="california-layout" style="width:25px"/>
+
+                                        <p:dataExporter type="pdf" target="eventsTable"
+                                                        fileName="Withdraws" pageOnly="true"/>
+                                    </h:commandLink>
+                                    <p:spacer width="10"></p:spacer>
+
+                                    <h:commandLink>
+                                        <p:graphicImage name="logo/csv.jpg"
+                                                        library="california-layout" style="width:30px"/>
+                                        <p:dataExporter type="csv" target="eventsTable"
+                                                        fileName="Withdraws" pageOnly="true"/>
+                                    </h:commandLink>
+                                </h:panelGroup>
+
+
+                                <p:dataTable id="eventsTable" var="model"
+                                             value="#{withdrawsView}" widgetVar="eventsTable"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                             paginator="true" lazy="true"
+                                             rows="#{withdrawsView.maximumresultsPerpage}"
+                                             emptyMessage="#{withdrawsView.dataEmptyMessage}"
+                                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                             rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                                    <f:facet name="header">
+                                        <p:outputPanel styleClass="leftAlign">
+
+                                            <p:outputPanel styleClass="centerAlign">
+
+                                                <p:outputLabel styleClass="official-fg-color bold"
+                                                               value="#{withdrawsView.totalRecords}  Withdraw (s) Found"/>
+
+                                            </p:outputPanel>
+
+                                        </p:outputPanel>
+                                    </f:facet>
+
+                                    <p:column width="30" headerText="No.">
+                                        <h:outputText value="#{row + 1}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Transaction Number"/>
+                                        </f:facet>
+                                        <h:outputText value="#{model.transactionNumber}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Employee"/>
+                                        </f:facet>
+                                        <h:outputText value="#{model.user.fullName}"/>
+                                    </p:column>
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Amount (Shs)"/>
+                                        </f:facet>
+                                        <h:outputText
+                                                value="#{depositsView.currencyFormat(model.amountRequested)}"/>
+                                    </p:column>
+
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Date Created"/>
+                                        </f:facet>
+                                        <h:outputText
+                                                value="#{depositsView.DateFormated(model.dateCreated)}"/>
+                                    </p:column>
+
+
+                                </p:dataTable>
+                                <p:blockUI block="usersView" trigger="usersView:eventsTable">
+                                    <p:graphicImage value="/resources/images/workingicon.png"/>
+                                </p:blockUI>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

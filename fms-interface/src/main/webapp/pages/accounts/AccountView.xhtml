@@ -1,0 +1,178 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">Accounts</ui:define>
+
+
+    <ui:define name="content">
+        <h:form id="accountsView" rendered="#{pgwRenderer.viewAccounts}">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <div class="card">
+                        <div class="shadow-box ui-shadow-1">
+                            <p:breadCrumb homeDisplay="text" styleClass="breadcrumb">
+                                <p:menuitem value=""/>
+                                <p:menuitem value="Home" url="#{request.contextPath}/Dashboard"
+                                            style="font-size: 13px; margin-left: 5px !important; font-weight: bold !important;"/>
+                                <p:menuitem value="User Accounts"
+                                            url="#{request.contextPath}#{accountsView.viewPath}"/>
+
+                            </p:breadCrumb>
+                        </div>
+
+                        <p:separator/>
+
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <label>Sort By : </label>
+                                <p:selectOneMenu value="#{accountsView.selectedSortField}"
+                                                 var="sortField" effect="fade"
+                                                 converter="sortFieldConverter"
+                                                 actionListener="#{accountsView.reloadFilterReset()}">
+                                    <f:selectItem itemLabel="--Select--" itemValue="#{null}"/>
+                                    <f:selectItems value="#{accountsView.sortFields}"
+                                                   var="sortField" itemLabel="#{sortField}"
+                                                   itemValue="#{sortField}"/>
+                                    <p:column>
+                                        <h:outputText value="#{sortField}"/>
+                                    </p:column>
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <p:commandButton id="accountSearchBtn"
+                                                 actionListener="#{accountsView.reloadFilterReset}"
+                                                 update="accountsView" icon="fa fa-search" value="Search"
+                                                 styleClass="orange-btn MarginLeft5"/>
+                                <p:spacer width="10"/>
+                                <h:commandLink>
+                                    <p:graphicImage name="logo/PDF_file_icon.svg"
+                                                    library="california-layout" style="width:25px"/>
+
+
+                                    <p:dataExporter type="pdf" target="accountsTable"
+                                                    fileName="Accounts" pageOnly="true"/>
+                                </h:commandLink>
+
+                                <p:spacer width="10"/>
+
+                                <h:commandLink>
+                                    <p:graphicImage name="logo/csv.jpg" library="california-layout"
+                                                    style="width:30px"/>
+                                    <p:dataExporter type="csv" target="accountsTable"
+                                                    fileName="Accounts" pageOnly="true"/>
+                                </h:commandLink>
+                            </div>
+                        </div>
+
+
+                        <div class="shadow-box ui-shadow-1">
+                            <p:dataTable id="accountsTable" var="model"
+                                         value="#{accountsView}" widgetVar="accountsTable"
+                                         rowKey="#{model.id}" selectionMode="single"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         paginator="true" lazy="true"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                         rows="#{accountsView.maximumresultsPerpage}"
+                                         emptyMessage="#{accountsView.dataEmptyMessage}"
+                                         paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                         rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                                <f:facet name="header">
+                                    <p:outputPanel styleClass="leftAlign">
+                                        <p:outputPanel styleClass="centerAlign">
+                                            <p:commandButton icon="fa fa-plus"
+                                                             rendered="#{pgwRenderer.updateAccount}"
+                                                             value="Credit All Accounts"
+                                                             styleClass="green-btn MarginLeft5"
+                                                             action="#{accountForm.getViewPath}">
+                                            </p:commandButton>
+                                            <p:spacer width="10"/>
+                                            <p:outputLabel
+                                                    value="#{accountsView.totalRecords} account(s) found"
+                                                    styleClass="white bold"/>
+                                        </p:outputPanel>
+                                    </p:outputPanel>
+                                </f:facet>
+
+                                <p:column width="30" headerText="No.">
+                                    <h:outputText value="#{row + 1}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Name"/>
+                                    </f:facet>
+                                    <h:outputText value="#{model.user.fullName}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Entitled Allowance (Shs)"/>
+                                    </f:facet>
+                                    <h:outputText
+                                            value="#{depositsView.currencyFormat(model.entitledAllowance)}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Outstanding Balance (Shs)"/>
+                                    </f:facet>
+                                    <h:outputText
+                                            value="#{depositsView.currencyFormat(model.outstandingBalance)}"/>
+                                </p:column>
+
+                                <p:column headerText="Set User Calendar" rendered="true">
+                                    <p:commandButton icon="fa fa-fw fa-calendar-check-o"
+                                                     styleClass="green-btn"
+                                                     action="#{userCalendarForm.getViewPath}"
+                                                     value="User Calendar"
+                                                     onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);">
+                                        <f:setPropertyActionListener
+                                                target="#{userCalendarForm.model}" value="#{model.user}"/>
+                                    </p:commandButton>
+                                    <p:spacer width="10"/>
+                                    <p:commandButton action="#{accountUpdateForm.getViewPath}"
+                                                     value="View/Edit" styleClass="hyperLink"
+                                                     onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);">
+                                        <f:setPropertyActionListener
+                                                target="#{accountUpdateForm.model}"
+                                                value="#{model}"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                                <p:column headerText="Delete" width="50" rendered="false">
+                                    <p:commandButton icon="fa fa-trash"
+                                                     styleClass="red-btn MarginLeft5"
+                                                     onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);"
+                                                     action="#{accountsView.delete(model)}" update="accountsTable">
+                                        <p:confirm header="Confirmation"
+                                                   message="You are about to delete an account. Do you wish to continue?"
+                                                   icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+
+                            <p:blockUI block="accountsView" trigger="accountSearchBtn">
+                                <p:graphicImage value="/resources/images/workingicon.png"/>
+                            </p:blockUI>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true">
+                <p:commandButton value="Yes" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up"/>
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down"/>
+            </p:confirmDialog>
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

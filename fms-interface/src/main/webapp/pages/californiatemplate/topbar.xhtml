@@ -1,0 +1,34 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:po="http://primefaces.org/california">
+
+    <div class="layout-topbar">
+        <h:link outcome="/dashboard" styleClass="logo">
+            <p:graphicImage name="logo/logo.png" library="california-layout" style="width:120px; height:60px;margin-top:-10px" />
+        </h:link>
+
+        <a id="menu-button" href="#">
+            <i class="fa fa-align-left" />
+        </a>
+
+        <a id="layout-megamenu-button" href="#">
+            <i class="fa fa-angle-down"></i>
+            <span class="mega-menu-title">Menu</span>
+        </a>
+
+        <ui:fragment rendered="#{guestPreferences.profileMode == 'topbar' ? true : false}">
+            <a id="topbar-menu-button" href="#">
+                <p:graphicImage name="images/avatar.png" library="california-layout" />
+                <span>#{homePage.loggedinUser}</span>
+            </a>
+
+            <ul id="topbar-usermenu" class="usermenu usermenu-overlay">
+                
+            </ul>
+        </ui:fragment>
+
+        <a id="right-sidebar-button" href="#">
+            <i class="fa fa-ellipsis-v" />
+        </a>
+    </div>
+
+</ui:composition>
