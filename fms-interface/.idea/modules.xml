@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/fms-interface.iml" filepath="$PROJECT_DIR$/fms-interface.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../fms-views/fms-views.iml" filepath="$PROJECT_DIR$/../fms-views/fms-views.iml" />
-    </modules>
-  </component>
-</project>
