@@ -1,0 +1,166 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">Personal Calendar</ui:define>
+    <ui:define name="viewname">Calendar</ui:define>
+    <ui:define name="head">
+        <script type="text/javascript">
+            //<![CDATA[
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.title = '';
+                this.cfg.seriesColors = ['#00acac', '#3e96e7'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#ffffff',
+                    gridLineColor: '#EEEEEE',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#212121'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    lineWidth: 1,
+                    markerOptions: {
+                        shadow: false,
+                        size: 7,
+                        style: 'circle'
+                    }
+                }
+            }
+
+            //]]>
+        </script>
+        <style type="text/css">
+            .main-content {
+                padding: 0;
+            }
+
+            .fc-event.amoko {
+                background-color: red !important;
+                border: 1px solid red !important;
+                padding: 3px;
+            }
+
+            .fc-event.ivan {
+                background-color: dodgerblue !important;
+                border: 1px solid dodgerblue !important;
+                padding: 3px;
+            }
+
+            .fc-event-time {
+                display: none;
+            }
+            #schedule .fc-event-time{
+                display:none;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <style type="text/css">
+            .value {
+                width: 1000px;
+            }
+        </style>
+
+
+        <h:form rendered="#{pgwRenderer.viewAccounts}" prependId="false">
+            #{userCalendar.employeeRecord(userCalendarForm.model)}
+            <div class="ui-g">
+                <div class="ui-g-12 ui-md-12 ui-lg-9">
+                    <p:growl id="messages" showDetail="true"/>
+
+                    <h:panelGrid columnClasses="value">
+                        <p:schedule id="schedule" value="#{userCalendar.eventModel}"
+                                    widgetVar="myschedule">
+
+                            <p:ajax event="dateSelect"
+                                    update="eventDetails"
+                                    listener="#{userCalendar.onDateSelect}"
+                                    oncomplete="PF('eventDialog').show();"/>
+
+                        </p:schedule>
+                    </h:panelGrid>
+
+                    <p:dialog widgetVar="eventDialog" header="Event Details"
+                              rendered="#{pgwRenderer.access}"
+                              showEffect="clip" hideEffect="clip">
+
+                        <h:panelGrid id="eventDetails" columns="2">
+                            <p:outputLabel value="Employee"/>
+
+                            <p:inputText id="title" value="#{userCalendarForm.model.fullName}"
+                                         readonly="true"/>
+
+
+                            <p:outputLabel for="from" value="From:"/>
+                            <p:datePicker id="from"
+                                          value="#{userCalendar.event.startDate}" pattern="dd/MM/yyyy"
+                                          showTime="true" appendTo="@(body)"/>
+
+                            <p:outputLabel for="to" value="To:"/>
+                            <p:datePicker id="to" value="#{userCalendar.event.endDate}"
+                                          pattern="dd/MM/yyyy" showTime="true" appendTo="@(body)"/>
+
+                            <p:outputLabel/>
+                            <!-- <h:selectBooleanCheckbox id="allDay" value="#{userCalendar.event.allDay}" /> -->
+
+                            <p:commandButton type="reset" value="Reset"/>
+                            <p:commandButton id="addButton" value="Save"
+                                             action="#{userCalendar.addEvent}"
+                                             oncomplete="PF('myschedule').update();PF('eventDialog').hide();"/>
+                        </h:panelGrid>
+                    </p:dialog>
+                </div>
+
+                <div class="ui-g-12 ui-md-12 ui-lg-3">
+                    <div class="card">
+                        <h2>Employee Details</h2>
+                        <p:panelGrid columns="1" layout="grid"
+                                     styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <label><b>Name</b></label>
+                                <br/>
+                                <p:outputLabel
+                                        value="#{userCalendarForm.model.fullName}"/>
+                            </h:panelGroup>
+                            <h:panelGroup styleClass="md-inputfield">
+                                <label><b>Contact</b></label>
+                                <br/>
+                                <p:outputLabel
+                                        value="Shs. #{userCalendar.getPhone(userCalendarForm.model)}"/>
+                            </h:panelGroup>
+                            <h:panelGroup styleClass="md-inputfield">
+                                <label><b>Entitled Allowance</b></label>
+                                <br/>
+                                <p:outputLabel
+                                        value="Shs. #{userCalendar.getEntitled(userCalendarForm.model)}"/>
+                            </h:panelGroup>
+                            <h:panelGroup styleClass="md-inputfield">
+                                <label><b>Outstanding Balance</b></label>
+                                <br/>
+                                <p:outputLabel
+                                        value="Shs. #{userCalendar.getBalance(userCalendarForm.model)}"/>
+                            </h:panelGroup>
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:button value="Back" styleClass="red-btn"
+                                          icon="fa fa-backward" ajax="false"
+                                          outcome="#{accountsView.viewPath}"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </div>
+                </div>
+            </div>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

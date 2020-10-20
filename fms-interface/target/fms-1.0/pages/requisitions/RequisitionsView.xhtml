@@ -1,0 +1,223 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">Requisitions</ui:define>
+
+    <ui:define name="viewname">View Requisitions</ui:define>
+
+    <ui:define name="content">
+        <h:form id="requisitionsView" rendered="#{pgwRenderer.viewRequisition}">
+            <p:growl id="growl" showDetail="true" sticky="true"/>
+            <div class="ui-g">
+
+                <div class="ui-g-12">
+                    <div class="card">
+                        <div class="shadow-box ui-shadow-1">
+                            <p:breadCrumb homeDisplay="text" styleClass="breadcrumb">
+                                <p:menuitem value=""/>
+                                <p:menuitem value="Home" url="#{request.contextPath}/Dashboard"
+                                            style="font-size: 13px; margin-left: 5px !important; font-weight: bold !important;"/>
+                                <p:menuitem value="Requisitions"
+                                            url="#{request.contextPath}#{requisitionsView.viewPath}"/>
+                            </p:breadCrumb>
+                        </div>
+                        <div class="shadow-box ui-shadow-1">
+                            <div class="ui-g">
+                                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                    <p:outputLabel styleClass="Bold" value="Search:"/>
+
+                                    <p:inputText id="searchField" required="false"
+                                                 placeholder="Type text to search"
+                                                 styleClass="boardered-text-field search-field MarginLeft5"
+                                                 value="#{requisitionsView.searchTerm}"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                    <p:outputLabel styleClass="Bold" value="From : "/>
+
+                                    <p:calendar effect="fold" value="#{requisitionsView.dateFrom}"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                    <p:outputLabel styleClass="Bold " value="To: "/>
+
+                                    <p:calendar effect="fold" value="#{requisitionsView.dateTo}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                    <p:outputLabel styleClass="Bold" value="Sort By : "/>
+                                    <p:selectOneMenu value="#{requisitionsView.selectedSortField}"
+                                                     var="sortField" effect="fade"
+                                                     converter="sortFieldConverter"
+                                                     actionListener="#{requisitionsView.reloadFilterReset()}">
+                                        <f:selectItem itemLabel="--Select--" itemValue="#{null}"/>
+                                        <f:selectItems value="#{requisitionsView.sortFields}"
+                                                       var="sortField" itemLabel="#{sortField}"
+                                                       itemValue="#{sortField}"/>
+                                        <p:column>
+                                            <h:outputText value="#{sortField}"/>
+                                        </p:column>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                    <p:commandButton id="requisitionSearchBtn"
+                                                     actionListener="#{requisitionsView.reloadFilterReset}"
+                                                     update="requisitionsView" icon="fa fa-search" value="Search"
+                                                     styleClass="orange-btn MarginLeft5"/>
+                                    <p:spacer width="10"/>
+
+                                    <p:panelGrid rendered="#{!pgwRenderer.administrator}">
+                                        <p:commandButton icon="fa fa-plus" value="Make requisition"
+                                                         rendered="#{requisitionsView.stillpending}"
+                                                         styleClass="green-btn MarginLeft5"
+                                                         action="#{requisitionForm.getViewPath}">
+                                            <f:setPropertyActionListener target="#{userForm.model}"
+                                                                         value="#{null}"/>
+                                        </p:commandButton>
+                                    </p:panelGrid>
+                                    <p:spacer width="10"/>
+
+                                    <h:commandLink>
+                                        <p:graphicImage name="logo/PDF_file_icon.svg"
+                                                        library="california-layout" style="width:25px"/>
+                                        <p:dataExporter type="pdf" target="requisitionsTable"
+                                                        fileName="requisitions" pageOnly="true"/>
+                                    </h:commandLink>
+                                    <h:commandLink>
+                                        <p:graphicImage name="logo/csv.jpg" library="california-layout"
+                                                        style="width:30px"/>
+                                        <p:dataExporter type="csv" target="requisitionsTable"
+                                                        fileName="requisitions" pageOnly="true"/>
+                                    </h:commandLink>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="shadow-box ui-shadow-1">
+                            <p:dataTable id="requisitionsTable" var="model"
+                                         value="#{requisitionsView}" widgetVar="requisitionsTable"
+                                         rowKey="#{model.id}" selectionMode="single"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         paginator="true" lazy="true"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                         rows="#{requisitionsView.maximumresultsPerpage}"
+                                         emptyMessage="#{requisitionsView.dataEmptyMessage}"
+                                         paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                         rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                                <f:facet name="header">
+                                    <p:outputPanel styleClass="leftAlign">
+                                        <p:panelGrid styleClass="centerAlign">
+
+
+                                            <p:outputLabel
+                                                    value="#{requisitionsView.totalRecords} Requisition(s) found"
+                                                    styleClass="white bold"/>
+                                        </p:panelGrid>
+
+                                    </p:outputPanel>
+                                </f:facet>
+
+                                <p:column width="30" headerText="No.">
+                                    <h:outputText value="#{row + 1}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Requisition No."/>
+                                    </f:facet>
+                                    <h:outputText value="#{model.requisitionNumber}"/>
+                                </p:column>
+                                <p:column rendered="#{pgwRenderer.administrator}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Name"/>
+                                    </f:facet>
+                                    <h:outputText value="#{model.user.fullName}"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Amount (Shs)"/>
+                                    </f:facet>
+                                    <h:outputText style="text-align: right; float: right;align-content: right"
+                                                  value="#{requisitionsView.currencyFormat(model)}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Days Requested"/>
+                                    </f:facet>
+                                    <h:outputText value="#{model.daysRequested}"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Start Date"/>
+                                    </f:facet>
+                                    <h:outputText
+                                            value="#{requisitionsView.DateFormatedStart(model)}"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="End Date"/>
+                                    </f:facet>
+                                    <h:outputText
+                                            value="#{requisitionsView.DateFormatedEnd(model)}"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Requisition Status"/>
+                                    </f:facet>
+                                    <h:outputText value="#{model.requisitionStatus}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Viewed"/>
+                                    </f:facet>
+                                    <h:outputText value="#{requisitionsView.seen(model.view)}"/>
+                                </p:column>
+
+                                <p:column headerText="Action">
+
+                                    <p:commandButton icon="fa fa-eye"
+                                                     action="#{requisitionDetails.getViewPath}">
+                                        <f:setPropertyActionListener
+                                                target="#{requisitionDetails.model}" value="#{model}"/>
+                                    </p:commandButton>
+                                    <p:spacer/>
+
+
+                                </p:column>
+
+                            </p:dataTable>
+
+
+                            <p:blockUI block="requisitionsView" trigger="requisitionSearchBtn">
+                                <p:graphicImage value="/resources/images/workingicon.png"/>
+                            </p:blockUI>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true">
+                <p:commandButton value="Yes" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up"/>
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down"/>
+            </p:confirmDialog>
+
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

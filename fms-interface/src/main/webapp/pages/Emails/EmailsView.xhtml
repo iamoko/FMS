@@ -1,0 +1,125 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui"
+				template="/pages/californiatemplate/template.xhtml">
+
+	<ui:define name="content">
+		<h:form id="emailsView">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="">
+						<div class="card">
+							<div class="shadow-box ui-shadow-1">
+								<p:breadCrumb homeDisplay="text" styleClass="breadcrumb">
+									<p:menuitem value="" />
+									<p:menuitem value="Home"
+												style="font-size: 13px; margin-left: 5px !important; font-weight: bold !important;"
+												/>
+									<p:menuitem value="Sent Emails" url="#{emailsView.viewPath}" />
+
+								</p:breadCrumb>
+							</div>
+						</div>
+
+						<p:panelGrid styleClass="Wid100" columns="6">
+							<p:outputPanel styleClass="Wid100">
+								<p:outputLabel styleClass="Bold Fs15 Wid20" value="Search:" />
+								<p:inputText id="searchField" required="false"
+											 placeholder="Type text to search"
+											 styleClass="Wid70 boardered-text-field search-field MarginLeft5"
+											 value="#{emailsView.searchTerm}" />
+							</p:outputPanel>
+
+
+
+
+							<p:outputPanel styleClass="Wid100">
+								<p:outputLabel styleClass="Bold Fs15 Wid20" value="From: " />
+
+								<p:calendar inputStyleClass="Wid70 boardered-text-field"
+											value="#{emailsView.startDate}" showOn="both" />
+							</p:outputPanel>
+
+							<p:outputPanel styleClass="Wid100">
+								<p:outputLabel styleClass="Bold Fs15 Wid20" value="To: " />
+								<p:calendar inputStyleClass="Wid70 boardered-text-field"
+											value="#{emailsView.endDate}" showOn="both" />
+							</p:outputPanel>
+							<p:outputPanel styleClass="Wid100">
+
+
+								<p:commandButton
+										actionListener="#{emailsView.reloadFilterReset()}"
+										update="emailsView" icon="fa fa-search" value="Search"
+										styleClass="orange-btn MarginLeft5" />
+							</p:outputPanel>
+
+						</p:panelGrid>
+
+						<div class="shadow-box ui-shadow-1">
+
+							<p:dataTable id="emailsTable" var="model" value="#{emailsView}"
+										 widgetVar="usersTable"
+										 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+										 paginator="true" lazy="true"
+										 rows="#{emailsView.maximumresultsPerpage}"
+										 emptyMessage="#{emailsView.dataEmptyMessage}"
+										 paginatorPosition="bottom" paginatorAlwaysVisible="false"
+										 rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+								<f:facet name="header">
+									<p:outputPanel styleClass="leftAlign">
+										<p:outputPanel styleClass="centerAlign">
+											<p:outputLabel styleClass="official-fg-color bold"
+														   value="#{emailsView.totalRecords}  Sent Email (s) Found" />
+										</p:outputPanel>
+
+									</p:outputPanel>
+								</f:facet>
+
+								<p:column width="30" headerText="No.">
+									<h:outputText value="#{row + 1}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Recipient" />
+									</f:facet>
+									<h:outputText value="#{model.user.fullName}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Heading" />
+									</f:facet>
+									<h:outputText value="#{model.message}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Message" />
+									</f:facet>
+									<h:outputText value="#{model.heading}" />
+								</p:column>
+
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Date Sent" />
+									</f:facet>
+									<h:outputText value="#{model.dateCreated}" />
+								</p:column>
+
+							</p:dataTable>
+
+							<p:blockUI block="emailsView" trigger="emailsView:emailsTable">
+								<p:graphicImage value="/resources/images/workingicon.png" />
+							</p:blockUI>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pc="http://primefaces.org/california">
+
+	<h:form>
+		<div id="layout-megamenu"
+			class="ui-g-12 layout-megamenu #{guestPreferences.darkMegaMenu ? 'layout-megamenu-dark' : ''} #{guestPreferences.gradientMegaMenu ? 'layout-megamenu-gradient' : ''}">
+			<div class="ui-g-12 ui-md-6 ui-lg-3 layout-megamenu-submenu">
+				<h4>System Reports</h4>
+				<ul>
+					<li><a href="#"> <i class="fa fa-fw fa-th-list" /> <span><p:commandButton
+									id="profile" value="System Logs"
+									style="background-color:transparent;border:none;color:#000"
+									action="/pages/home/Logs.xhtml" /></span>
+					</a></li>
+				</ul>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-3 layout-megamenu-submenu">
+				<h4>Finance Reports</h4>
+				<ul>
+					<li><a href="#"> <i class="fa fa-fw fa-file-text-o" /> <span><p:commandButton
+									id="Withdraw" value="Withdraw"
+									rendered="#{pgwRenderer.viewWithdraws}" 
+									style="background-color:transparent;border:none;color:#000"
+									action="/pages/transactions/withDraw.xhtml" /></span>
+					</a></li>
+					<li><a href="#"> <i class="fa fa-fw fa-dollar" /> <span><p:commandButton
+									id="Deposit" value="Deposit"
+									rendered="#{pgwRenderer.viewDeposits}"
+									style="background-color:transparent;border:none;color:#000"
+									action="/pages/transactions/depositsView.xhtml" /></span>
+					</a></li>
+					<li><a href="#"> <i class="fa fa-fw fa-user-o"></i> <span><p:commandButton
+									id="Accounts" value="Accounts"
+									rendered="#{pgwRenderer.viewAccounts}" 
+									style="background-color:transparent;border:none;color:#000"
+									action="/pages/accounts/AccountView.xhtml" /></span>
+					</a></li>
+					
+				</ul>
+			</div>
+
+
+		</div>
+	</h:form>
+
+</ui:composition>

@@ -1,0 +1,71 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+    <ui:define name="title">Update Account</ui:define>
+
+    <ui:define name="content">
+        <h:form id="accountForm" rendered="#{pgwRenderer.updateAccount}">
+            <div class="ui-g ui-g-nopad">
+                <div class="ui-g-12">
+                    <div class="card">
+                        <div class="card">
+                            <div class="shadow-box ui-shadow-1">
+                                <p:breadCrumb homeDisplay="text" styleClass="breadcrumb">
+                                    <p:menuitem value=""/>
+                                    <p:menuitem value="Home"
+                                                style="font-size: 13px; margin-left: 5px !important; font-weight: bold !important;"
+                                                url="#{request.contextPath}/Dashboard"/>
+                                    <p:menuitem value="Accounts"
+                                                url="#{request.contextPath}#{accountsView.viewPath}"/>
+
+                                    <p:menuitem value="Account Update Form" url="/fms#{accountUpdateForm.viewPath}"/>
+                                </p:breadCrumb>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div>
+                                <p:fieldset legend="Account Details" style="margin-bottom:20px" >
+                                    <p:panelGrid columns="2" layout="grid"
+                                                 styleClass="ui-panelgrid-blank form-group">
+                                        <h:panelGroup styleClass="md-inputfield">
+                                            <label>Name</label>
+                                            <br/>
+                                            <p:outputLabel  value="#{accountUpdateForm.model.user.fullName}"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="md-inputfield">
+                                            <label>Entitled Allowance</label>
+                                            <br/>
+                                            <p:inputNumber id="entitled" required="true"
+                                                          value="#{accountUpdateForm.model.entitledAllowance}"/>
+
+                                        </h:panelGroup>
+
+                                    </p:panelGrid>
+                                </p:fieldset>
+                                <p:outputPanel styleClass="rightAlign">
+                                    <p:button value="Back" styleClass="red-btn"
+                                              icon="fa fa-backward" ajax="false"
+                                              onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);"
+                                              outcome="/pages/accounts/AccountView.xhtml"/>
+                                    <p:spacer width="10"/>
+                                    <p:commandButton id="saveBtn" action="#{accountUpdateForm.save}"
+                                                     onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);"
+                                                     value="Save" update="accountForm" validateClient="true"
+                                                     icon="fa fa-save" styleClass="green-btn"/>
+
+
+                                </p:outputPanel>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

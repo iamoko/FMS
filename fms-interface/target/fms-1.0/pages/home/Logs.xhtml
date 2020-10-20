@@ -1,0 +1,112 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+    <ui:define name="title">System Logs</ui:define>
+    <ui:define name="viewname">Logs</ui:define>
+    <ui:define name="content">
+        <h:form id="logsView">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <div class="">
+                        <div class="card">
+                            <div class="shadow-box ui-shadow-1">
+                                <p:breadCrumb homeDisplay="text" styleClass="breadcrumb">
+                                    <p:menuitem value=""/>
+                                    <p:menuitem value="Home" url="#{request.contextPath}/Dashboard"
+                                                style="font-size: 13px; margin-left: 5px !important; font-weight: bold !important;"/>
+                                    <p:menuitem value="User Logs"/>
+
+                                </p:breadCrumb>
+                            </div>
+                        </div>
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-12 ui-lg-3">
+                                <p:outputLabel styleClass="Bold" value="Search:"/>
+                                <br/>
+                                <p:inputText id="searchField" required="false"
+                                             placeholder="Type text to search"
+                                             styleClass="boardered-text-field search-field MarginLeft5"
+                                             value="#{logsView.searchTerm}"/>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-12 ui-lg-3">
+                                <p:outputLabel styleClass="Bold" value="From: "/>
+                                <br/>
+                                <p:calendar inputStyleClass="boardered-text-field"
+                                            value="#{logsView.startDate}" showOn="both"/>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-12 ui-lg-3">
+                                <p:outputLabel styleClass="Bold" value="To: "/>
+                                <br/>
+                                <p:calendar inputStyleClass="boardered-text-field"
+                                            value="#{logsView.endDate}" showOn="both"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-3">
+                                <p:commandButton
+                                        actionListener="#{logsView.reloadFilterReset()}"
+                                        update="logsView" icon="fa fa-search" value="Search"
+                                        styleClass="orange-btn MarginLeft5"/>
+                            </div>
+                        </div>
+
+                        <div class="shadow-box ui-shadow-1">
+
+                            <p:dataTable id="logsTable" var="model" value="#{logsView}"
+                                         widgetVar="usersTable"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         paginator="true" lazy="true"
+                                         rows="#{logsView.maximumresultsPerpage}"
+                                         emptyMessage="#{logsView.dataEmptyMessage}"
+                                         paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                         rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                                <f:facet name="header">
+                                    <p:outputPanel styleClass="leftAlign">
+                                        <p:outputPanel styleClass="centerAlign">
+                                            <p:outputLabel styleClass="official-fg-color bold"
+                                                           value="#{logsView.totalRecords}  logs (s) Found"/>
+                                        </p:outputPanel>
+
+                                    </p:outputPanel>
+                                </f:facet>
+
+                                <p:column width="30" headerText="No.">
+                                    <h:outputText value="#{row + 1}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Name"/>
+                                    </f:facet>
+                                    <h:outputText value="#{model.user.fullName}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Action"/>
+                                    </f:facet>
+                                    <h:outputText value="#{model.action}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Date"/>
+                                    </f:facet>
+                                    <h:outputText value="#{model.dateLogged}"/>
+                                </p:column>
+
+                            </p:dataTable>
+                            <p:blockUI block="logsView" trigger="logsView:logsTable">
+                                <p:graphicImage value="/resources/images/workingicon.png"/>
+                            </p:blockUI>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+
+    </ui:define>
+</ui:composition>
