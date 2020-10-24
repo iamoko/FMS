@@ -1,0 +1,17 @@
+org\pahappa\systems\models\Email.class
+org\pahappa\systems\models\permissions\CustomPermissionInterpreter.class
+org\pahappa\systems\models\RequisitionPerDay.class
+org\pahappa\systems\models\Withdraw.class
+org\pahappa\systems\models\Calendar.class
+org\pahappa\systems\models\UserLog.class
+org\pahappa\systems\App.class
+org\pahappa\systems\models\Account.class
+org\pahappa\systems\models\permissions\CustomPermissionConstants.class
+org\pahappa\systems\models\permissions\CustomPermAnnotation.class
+org\pahappa\systems\models\Requisition.class
+org\pahappa\systems\models\TemplateType.class
+org\pahappa\systems\models\RequisitionStatus.class
+org\pahappa\systems\models\EmailTemplate.class
+org\pahappa\systems\models\NonWorkingDays.class
+org\pahappa\systems\models\Deposit.class
+org\pahappa\systems\models\Template.class

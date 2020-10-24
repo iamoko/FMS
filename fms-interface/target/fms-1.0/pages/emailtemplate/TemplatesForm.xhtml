@@ -1,0 +1,112 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">Email Template Form</ui:define>
+    <ui:define name="viewname">Templates</ui:define>
+    <ui:define name="content">
+        <h:form id="emailTemplateForm">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="card">
+                        <div>
+                            <p:breadCrumb homeDisplay="text" styleClass="breadcrumbs">
+                                <p:menuitem value=""/>
+                                <p:menuitem value="Home" url="#{request.contextPath}/Dashboard"
+                                            style="font-size: 13px; margin-left: 5px !important; font-weight: bold !important;"/>
+                                <p:menuitem value="Email Templates"
+                                            url="#{request.contextPath}#{emailTemplateView.viewPath}"/>
+                                <p:menuitem value="Template" url="#{request.contextPath}#{emailTemplateForm.viewPath}"/>
+                            </p:breadCrumb>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui-g ui-fluid">
+                #{emailTemplateForm.alreadyAvailed(emailTemplateForm.model)}
+                <div class="ui-g-12 ui-lg-6">
+                    <!-- Left Side -->
+                    <div class="card card-w-title">
+                        <p:panelGrid columns="1" layout="grid"
+                                     styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:outputLabel for="@next" value="Template For: "/>
+                                <p:selectOneMenu id="city" value="#{emailTemplateForm.model.requisitionStatus}"
+                                                 styleClass="Wid50"
+                                                 effect="fold" required="true">
+                                    <f:selectItem itemLabel="Select One" itemValue=""/>
+                                    <f:selectItems value="#{emailTemplateForm.emailtemplates}"/>
+                                </p:selectOneMenu>
+
+
+                            </h:panelGroup>
+
+
+                            <h:panelGroup styleClass="md-inputfield">
+                                <label>The Email Message</label>
+                                <br/><br/>
+                                <p:textEditor widgetVar="editor1"
+                                              value="#{emailTemplateForm.model.template}" height="200"/>
+
+                            </h:panelGroup>
+
+
+                            <p:panelGrid columns="8" layout="grid"
+                                         styleClass="ui-panelgrid-blank form-group rightAlign">
+
+
+
+                                <p:commandButton id="saveBtn" action="#{emailTemplateForm.save}"
+                                                 onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);"
+                                                 value="Save" update="emailTemplateForm" validateClient="true"
+                                                 icon="fa fa-save" styleClass="green-btn"/>
+                                <p:button value="Back" styleClass="red-btn"
+                                          icon="fa fa-backward" ajax="false"
+                                          outcome="#{emailTemplateView.viewPath}"/>
+                            </p:panelGrid>
+
+
+                        </p:panelGrid>
+
+                    </div>
+                </div>
+
+                <div class="ui-g-12 ui-lg-6">
+                    <!-- Left Side -->
+                    <div class="card card-w-title">
+                        <h2>Hint</h2>
+                        <table border="1">
+                            <tr>
+                                <td>Wildcard</td>
+                                <td>Description</td>
+                            </tr>
+
+                            <tr>
+                                <td>{name}</td>
+                                <td>Name of the Email recipient</td>
+                            </tr>
+
+                            <tr>
+                                <td>{amount}</td>
+                                <td>Represents the amount of money</td>
+                            </tr>
+                            <tr>
+                                <td>{requisition}</td>
+                                <td>Represents the requisition number</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <p:blockUI block="emailTemplateForm" trigger="saveBtn">
+                <p:graphicImage value="/resources/images/workingicon.png"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

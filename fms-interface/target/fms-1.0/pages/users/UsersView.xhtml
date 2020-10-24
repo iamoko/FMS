@@ -1,0 +1,187 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+    <ui:define name="title">Users</ui:define>
+    <ui:define name="viewname">Users Details</ui:define>
+
+    <ui:define name="content">
+        <h:form id="usersView" rendered="#{pgwRenderer.viewUsers}">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <div class="">
+                        <div class="card">
+                            <div class="shadow-box ui-shadow-1">
+                                <p:breadCrumb homeDisplay="text" styleClass="breadcrumb">
+                                    <p:menuitem value=""/>
+                                    <p:menuitem value="Home" url="#{request.contextPath}/Dashboard"
+                                                style="font-size: 13px; margin-left: 5px !important; font-weight: bold !important;"/>
+                                    <p:menuitem value="Users" url="#{request.contextPath}#{usersView.viewPath}"/>
+
+                                </p:breadCrumb>
+                            </div>
+
+                            <div class="shadow-box ui-shadow-1">
+                                <div class="ui-g">
+                                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                        <p:outputLabel styleClass="Bold" value="Search:"/>
+                                        <br/>
+                                        <p:inputText id="searchField" required="false"
+                                                     placeholder="Type text to search"
+                                                     styleClass="boardered-text-field search-field MarginLeft5"
+                                                     value="#{usersView.searchTerm}"/>
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                        <p:outputLabel styleClass="Bold" value="From: "/>
+                                        <br/>
+                                        <p:datePicker inputStyleClass="boardered-text-field"
+                                                      value="#{usersView.bornFrom}"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                        <p:outputLabel styleClass="Bold" value="To: "/>
+                                        <br/>
+                                        <p:datePicker inputStyleClass="boardered-text-field"
+                                                      value="#{usersView.bornTo}"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                        <p:outputLabel styleClass="Bold" value="Gendar:"/>
+                                        <br />
+                                        <p:selectOneMenu converter="genderConverter"
+                                                         value="#{usersView.selectedGender}" var="gender"
+                                                         required="false" effect="fade" autoComplete="true"
+                                                         filter="true" scrollHeight="10" filterMatchMode="startsWith">
+                                            <f:selectItem itemLabel="Select Gender" itemValue="#{null}"/>
+                                            <f:selectItems value="#{usersView.listOfGenders}"
+                                                           var="gender" itemLabel="#{gender}" itemValue="#{gender}"/>
+                                            <p:column>
+                                                <h:outputText value="#{gender}"/>
+                                            </p:column>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                        <p:commandButton
+                                                actionListener="#{usersView.reloadFilterReset()}"
+                                                update="usersView" icon="fa fa-search" value="Search"
+                                                styleClass="orange-btn MarginLeft5"/>
+                                        <p:spacer width="10" />
+
+                                        <p:commandButton icon="fa fa-plus" value="New User"
+                                                         rendered="#{pgwRenderer.addUser}"
+                                                         styleClass="green-btn"
+                                                         action="#{userForm.getViewPath}">
+                                            <p:spacer width="10" />
+                                            <f:setPropertyActionListener target="#{userForm.model}"
+                                                                         value="#{null}"/>
+                                        </p:commandButton>
+                                        <p:spacer width="10" />
+                                        <h:commandLink>
+                                            <p:graphicImage name="logo/PDF_file_icon.svg"
+                                                            library="california-layout" style="width:20px"/>
+
+                                            <p:dataExporter type="pdf" target="employeesTable"
+                                                            fileName="requisitions" pageOnly="true"/>
+                                        </h:commandLink>
+                                        <p:spacer width="10" />
+                                        <h:commandLink>
+                                            <p:graphicImage name="logo/csv.jpg"
+                                                            library="california-layout" style="width:25px"/>
+                                            <p:dataExporter type="csv" target="employeesTable"
+                                                            fileName="requisitions" pageOnly="true"/>
+                                        </h:commandLink>
+                                    </div>
+
+                                </div>
+
+
+                                <p:separator/>
+                                <p:dataTable id="employeesTable" var="model"
+                                             value="#{usersView}" widgetVar="employeesTable"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                             paginator="true" lazy="true"
+                                             rows="#{usersView.maximumresultsPerpage}"
+                                             emptyMessage="No User records found" paginatorPosition="bottom"
+                                             paginatorAlwaysVisible="false" rowIndexVar="row" reflow="true"
+                                             styleClass="TableAlgnment">
+                                    <f:facet name="header">
+                                        <p:outputPanel styleClass="leftAlign">
+                                            <p:outputPanel styleClass="centerAlign">
+
+                                                <p:outputLabel styleClass="official-fg-color bold"
+                                                               value="#{usersView.totalRecords}  User (s) Found"/>
+
+                                            </p:outputPanel>
+
+                                        </p:outputPanel>
+                                    </f:facet>
+
+                                    <p:column width="30" headerText="No.">
+                                        <h:outputText value="#{row + 1}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Name"/>
+                                        </f:facet>
+                                        <h:outputText value="#{model.fullName}"/>
+                                    </p:column>
+
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Email Address"/>
+                                        </f:facet>
+                                        <h:outputText value="#{model.emailAddress}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Username"/>
+                                        </f:facet>
+                                        <h:outputText value="#{model.username}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Phone Number"/>
+                                        </f:facet>
+                                        <h:outputText value="#{model.phoneNumber}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Gender"/>
+                                        </f:facet>
+                                        <h:outputText value="#{model.gender}"/>
+                                    </p:column>
+
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Country"/>
+                                        </f:facet>
+                                        <h:outputText value="#{model.country}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Options" width="80"
+                                              styleClass="centerAlign">
+                                        <p:commandLink action="#{userForm.getViewPath}"
+                                                       value="View/Edit" styleClass="hyperLink">
+                                            <f:setPropertyActionListener target="#{userForm.model}"
+                                                                         value="#{model}">
+                                            </f:setPropertyActionListener>
+                                        </p:commandLink>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                            <p:blockUI block="usersView"
+                                       trigger="employeesTable searchField">
+                                <p:graphicImage value="/resources/images/workingicon.png"/>
+                            </p:blockUI>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
